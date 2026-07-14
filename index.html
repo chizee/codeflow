@@ -4191,8 +4191,11 @@ function makeArchitectureBlocks(facts,files,warnings){
         return corePaths.has(fact.path)||visiblePaths.has(fact.path);
     });
     var priority={shell:0,'action-entry':1,page:2,api:3,'database-adapter':4,service:5,component:6,hook:7,module:8,utility:9,test:10,fixture:11};
+    function blockPriority(kind){
+        return priority[kind]!==undefined?priority[kind]:12;
+    }
     candidates.sort(function(a,b){
-        return (priority[a.kind]||12)-(priority[b.kind]||12)||a.path.localeCompare(b.path);
+        return blockPriority(a.kind)-blockPriority(b.kind)||a.path.localeCompare(b.path);
     });
     if(candidates.length>ARCHITECTURE_MAX_BLOCKS){
         warnings.push('Diagram capped at '+ARCHITECTURE_MAX_BLOCKS+' blocks; '+(candidates.length-ARCHITECTURE_MAX_BLOCKS)+' directly related items were omitted for readability.');
